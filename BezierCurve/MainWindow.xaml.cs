@@ -20,14 +20,16 @@ namespace BezierCurve
     /// </summary>
     public partial class MainWindow : Window
     {
-        Curve bezierCurve = new Curve();
-        BezierPoint point;
+        public Curve bezierCurve = new Curve();
+        public BezierPoint SelectPoint;
 
         public MainWindow()
         {
             InitializeComponent();
             imageCanvas.Children.Add(bezierCurve.ControlPointsPath);
             imageCanvas.Children.Add(bezierCurve.BezierCurvePath);
+            listLandmarks.ItemsSource = bezierCurve.Landmarks;
+            //listLandmarks.SelectedItem = SelectPoint;
         }
 
         private void SelectOperation(object sender, RoutedEventArgs e)
@@ -61,20 +63,22 @@ namespace BezierCurve
             switch (Operation.option)
             {
                 case (Operation.Option.Select):
-                    point = null;
+                    SelectPoint = null;
                     foreach (var elem in bezierCurve.Landmarks)
                     {
                         if (elem.selectMouseDown(sender, e) != null)
                         {
-                            point = elem;
+                            SelectPoint = elem;
+                            XValue.Value = elem.PointX;
+                            YValue.Value = elem.PointY;
                             break;
                         }
                     }
                     break;
                 case (Operation.Option.Move):
-                    if (point != null)
+                    if (SelectPoint != null)
                     {
-                        point.moveMouse(sender, e);
+                        SelectPoint.moveMouseDown(sender, e);
                     }
                     break;
                 case (Operation.Option.Create):
@@ -89,12 +93,43 @@ namespace BezierCurve
             switch (Operation.option)
             {
                 case (Operation.Option.Move):
-                    if (point != null)
+                    if (SelectPoint != null)
                     {
-                        point.moveMouse(sender, e);
+                        SelectPoint.moveMouseMove(sender, e);
+                        XValue.Value = SelectPoint.PointX;
+                        YValue.Value = SelectPoint.PointY;
+                        bezierCurve.DrawBezierCurveControlPath();
+                        bezierCurve.DrawBezierCurve();
                     }
                     break;
             }
+        }
+
+        private void listLandmarks_Selected(object sender, RoutedEventArgs e)
+        {
+            var list = (ListView)sender;
+            var elem = (BezierPoint)list.SelectedItem;
+            XValue.Value = elem.PointX;
+            YValue.Value = elem.PointY;
+        }
+
+        private void UpdatePoint_Click(object sender, RoutedEventArgs e)
+        {
+            var elem = (BezierPoint)(listLandmarks.SelectedItem);
+            if (elem != null)
+            {
+                elem.PointX = (double)XValue.Value;
+                elem.PointY = (double)YValue.Value;
+                bezierCurve.DrawBezierCurveControlPath();
+                bezierCurve.DrawBezierCurve();
+            }
+        }
+
+        private void CreateNewPoint_Click(object sender, RoutedEventArgs e)
+        {
+            BezierPoint elem = new BezierPoint();
+            imageCanvas.Children.Add(elem.ellipse);
+            bezierCurve.Landmarks.Add(elem);
         }
     }
 }

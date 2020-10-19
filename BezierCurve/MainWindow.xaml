@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BezierCurve"
+        xmlns:local="clr-namespace:BezierCurve" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="550" Width="1000">
 
     <Window.Resources>
         <RoutedUICommand x:Key="SelectOperationCommand" Text="Select operation" />
@@ -39,9 +39,37 @@
                 <Canvas x:Name="imageCanvas" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove"  Width="750" Height="600" Background="LightBlue"/>
             </Viewbox>
             <GroupBox DockPanel.Dock="Right" HorizontalAlignment="Right" Header="Property">
-                <Grid x:Name="rightPanel" Width="200">
-
-                </Grid>
+                <DockPanel>
+                    <Grid DockPanel.Dock="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Button x:Name="CreateNewPoint" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Content="Create new" Margin="3" Click="CreateNewPoint_Click"/>
+                        <Label Content="X: " Grid.Row="1" Grid.Column="0"/>
+                        <xctk:DoubleUpDown Margin="3" x:Name="XValue" Grid.Row="1" Grid.Column="1" ></xctk:DoubleUpDown>
+                        <Label Content="Y: " Grid.Row="1" Grid.Column="2"/>
+                        <xctk:DoubleUpDown Margin="3" x:Name="YValue" Grid.Row="1" Grid.Column="3" ></xctk:DoubleUpDown>
+                        <Button x:Name="UpdatePoint" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Content="Update" Margin="3" Click="UpdatePoint_Click"/>
+                    </Grid>
+                    <ScrollViewer VerticalScrollBarVisibility="Visible" DockPanel.Dock="Bottom">
+                        <ListView Margin="10" Name="listLandmarks" SelectionChanged="listLandmarks_Selected">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="X" Width="120" DisplayMemberBinding="{Binding PointX,  Mode=TwoWay}" />
+                                    <GridViewColumn Header="Y" Width="120" DisplayMemberBinding="{Binding PointY, Mode=TwoWay}" />
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </ScrollViewer>
+                </DockPanel>
             </GroupBox>
         </DockPanel>
     </Grid>

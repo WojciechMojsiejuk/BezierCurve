@@ -18,7 +18,7 @@ namespace BezierCurve
         public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> self) => self.Select((item, index) => (item, index));
     }
 
-    class Curve : INotifyPropertyChanged
+    public class Curve : INotifyPropertyChanged
     {
         ObservableCollection<BezierPoint> landmarks;
 
@@ -28,7 +28,9 @@ namespace BezierCurve
         public Path ControlPointsPath = new Path();
         public Path BezierCurvePath = new Path();
 
-        const int STEP = 20;
+        public Grid grid = new Grid();
+
+        const int STEP = 100;
 
         public Curve()
         {
@@ -108,7 +110,7 @@ namespace BezierCurve
             
         }
 
-        void DrawBezierCurveControlPath()
+        public void DrawBezierCurveControlPath()
         {
             controlPointsFigure.StartPoint = Landmarks[0].Point;
 
@@ -136,7 +138,7 @@ namespace BezierCurve
             ControlPointsPath.Data = myPathGeometry;
         }
 
-        void DrawBezierCurve()
+        public void DrawBezierCurve()
         {
             bezierFigure.StartPoint = Landmarks[0].Point;
 
